@@ -248,14 +248,14 @@ def edit_image(inp, out, edits):
         inputfile = os.path.join(tmpdir, "saved.tar")
         outputfile = os.path.join(tmpdir, "ready.tar")
         #
-        cmd = "docker save {inp} -o {inputfile}"
+        cmd = "docker save -o {inputfile} {inp}"
         sh(cmd.format(**locals()))
         cmd = "tar xf {inputfile} -C {datadir}"
         sh(cmd.format(**locals()))
         run = sh("ls -l {tmpdir}".format(**locals()))
         logg.debug(run.stdout)
         #
-        if OK: 
+        if OK:
             changed = edit_datadir(datadir, out_tag, edits)
             if changed:
                 outfile = os.path.realpath(outputfile)
@@ -447,7 +447,7 @@ def edit_datadir(datadir, out, edits):
                             if arg in ["", None ]:
                                 value = u''
                             else:
-                                value = arg 
+                                value = arg
                             if key in config:
                                 if config[key] == value:
                                     logg.warning("unchanged meta '%s' %s", key, value)
@@ -555,8 +555,8 @@ def edit_datadir(datadir, out, edits):
                 for CONFIG in ['history']:
                     if CONFIG in config:
                         myself = os.path.basename(sys.argv[0])
-                        config[CONFIG] += [ {"empty_layer": True, 
-                            "created_by": "%s #(%s)" % (myself, __version__), 
+                        config[CONFIG] += [ {"empty_layer": True,
+                            "created_by": "%s #(%s)" % (myself, __version__),
                             "created": datetime.datetime.utcnow().isoformat() + "Z"} ]
                         new_config_text = json.dumps(config)
                 new_config_md = hashlib.sha256()
